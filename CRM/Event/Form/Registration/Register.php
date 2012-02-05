@@ -306,11 +306,6 @@ class CRM_Event_Form_Registration_Register extends CRM_Event_Form_Registration
         $config = CRM_Core_Config::singleton( );
         $this->add('hidden','scriptFee',null);
         $this->add('hidden','scriptArray',null);
-        $this->add( 'text',
-                    "email-{$this->_bltID}",
-                    ts( 'Email Address' ),
-                    array( 'size' => 30, 'maxlength' => 60 ), true );
-        $this->addRule( "email-{$this->_bltID}", ts('Email is not valid.'), 'email' );
         
         $bypassPayment = $allowGroupOnWaitlist = $isAdditionalParticipants = false;
         if ( $this->_values['event']['is_multiple_registrations'] ) {
