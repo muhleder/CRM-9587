@@ -467,7 +467,7 @@ class CRM_Event_Form_ManageEvent_Registration extends CRM_Event_Form_ManageEvent
                 $additionalProfileIds[0] =  $profileIds[0];
             }
             if (!is_numeric($additionalProfileIds[1])) {
-                $additionalProfileIds[0] = $profileIds[0];
+                $additionalProfileIds[1] = $profileIds[1];
             }
             //add multiple profiles if set
             self::addMultipleProfiles($profileIds, $values, 'custom_post_id_multiple');
