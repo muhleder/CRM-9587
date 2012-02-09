@@ -690,6 +690,8 @@ class CRM_Event_Form_Registration_Register extends CRM_Event_Form_Registration
     static function formRule( $fields, $files, $self) 
     {
         $errors = array( );
+        //check that either an email or firstname+lastname is included in the form(CRM-9587)
+        $self::checkProfileComplete($fields, &$errors, $self->_eventId);
         //To check if the user is already registered for the event(CRM-2426)
         if (!$self->_skipDupeRegistrationCheck) {
             $self->checkRegistration($fields, $self);
@@ -836,6 +838,22 @@ class CRM_Event_Form_Registration_Register extends CRM_Event_Form_Registration
         }
         
         return empty( $errors ) ? true : $errors;
+    }
+
+    /**
+     * Check if profiles are complete when event registration occurs(CRM-9587)
+     *
+     */
+    static function checkProfileComplete($fields, &$errors, $eventId) {
+        if (!$fields['email-Primary'] && !($fields['first_name'] && $fields['last_name'])) {
+            require_once 'CRM/Utils/System.php';
+            require_once 'CRM/Event/BAO/Event.php';
+            $defaults = $params = array('id' => $eventId);
+            CRM_Event_BAO_Event::retrieve($params, $defaults);
+            $message = ts("Mandatory fields (first name and last name, OR email address) are missing from this form. Please contact the event organizer. %1", array(1 => $defaults['confirm_from_email']));
+            $errors['profile_incomplete'] = $message;
+            CRM_Utils_System::setUFMessage($message);
+        }
     }
     
     /**

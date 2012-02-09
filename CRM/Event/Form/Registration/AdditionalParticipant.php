@@ -371,6 +371,9 @@ class CRM_Event_Form_Registration_AdditionalParticipant extends CRM_Event_Form_R
              CRM_Utils_Array::value( 'is_pay_later', $self->_values['event'] ) ) {
             $realPayLater = CRM_Utils_Array::value( 'is_pay_later', $self->_params[0] );
         }
+
+        //check that either an email or firstname+lastname is included in the form(CRM-9587)
+        CRM_Event_Form_Registration_Register::checkProfileComplete($fields, &$errors, $self->_eventId);
         
         if ( $button != 'skip' ) {
             //Additional Participant can also register for an event only once 
