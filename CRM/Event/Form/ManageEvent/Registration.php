@@ -536,10 +536,10 @@ class CRM_Event_Form_ManageEvent_Registration extends CRM_Event_Form_ManageEvent
                 }
             }
             if (!$isProfileComplete) {
-                $errorMsg['custom_pre_id'] = ts("Please include a Profile for online registration that contains a required Email Address field and / or required First Name + Last Name fields.");
+                $errorMsg['custom_pre_id'] = ts("Please include a Profile for online registration that contains an Email Address field and / or First Name + Last Name fields.");
             }
             if (!$isAdditionalProfileComplete) {
-                $errorMsg['additional_custom_pre_id'] = ts("Please include a Profile for online registration of additional participants that contains a required Email Address field and / or required First Name + Last Name fields.");
+                $errorMsg['additional_custom_pre_id'] = ts("Please include a Profile for online registration of additional participants that contains an Email Address field and / or First Name + Last Name fields.");
             }
             
             // // CRM-8485
@@ -600,7 +600,6 @@ class CRM_Event_Form_ManageEvent_Registration extends CRM_Event_Form_ManageEvent
             if ($profileId && is_numeric($profileId)) {
                 $fields = CRM_Core_BAO_UFGroup::getFields($profileId);
                 foreach ($fields as $field) {
-                    if ($field['is_required']) {
                         switch (TRUE) {
                             case substr_count($field['name'], 'email'):
                                 $profileReqFields[] = 'email';
@@ -612,7 +611,6 @@ class CRM_Event_Form_ManageEvent_Registration extends CRM_Event_Form_ManageEvent
                                 $profileReqFields[] = 'last_name';
                                 break;
                         }
-                    }
                 }
             }
         }
