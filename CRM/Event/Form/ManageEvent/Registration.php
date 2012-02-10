@@ -600,17 +600,17 @@ class CRM_Event_Form_ManageEvent_Registration extends CRM_Event_Form_ManageEvent
             if ($profileId && is_numeric($profileId)) {
                 $fields = CRM_Core_BAO_UFGroup::getFields($profileId);
                 foreach ($fields as $field) {
-                        switch (TRUE) {
-                            case substr_count($field['name'], 'email'):
-                                $profileReqFields[] = 'email';
-                                break;
-                            case substr_count($field['name'], 'first_name'):
-                                $profileReqFields[] = 'first_name';
-                                break;
-                            case substr_count($field['name'], 'last_name'):
-                                $profileReqFields[] = 'last_name';
-                                break;
-                        }
+                    switch (TRUE) {
+                        case substr_count($field['name'], 'email'):
+                            $profileReqFields[] = 'email';
+                            break;
+                        case substr_count($field['name'], 'first_name'):
+                            $profileReqFields[] = 'first_name';
+                            break;
+                        case substr_count($field['name'], 'last_name'):
+                            $profileReqFields[] = 'last_name';
+                            break;
+                    }
                 }
             }
         }
