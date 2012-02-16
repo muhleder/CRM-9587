@@ -474,7 +474,13 @@ class CRM_Event_Form_ManageEvent_Registration extends CRM_Event_Form_ManageEvent
             self::addMultipleProfiles($additionalProfileIds, $values, 'additional_custom_post_id_multiple');
             $isProfileComplete = self::isProfileComplete($profileIds);
             $isAdditionalProfileComplete = self::isProfileComplete($additionalProfileIds);
-            // TODO check all profiles have email address set if 'send confirmation email' is checked
+            //Check main profiles have an email address available if 'send confirmation email' is selected
+            if ($values['is_email_confirm']) {
+                $emailFields = self::getEmailFields($profileIds);
+                if (!count($emailFields)) {
+                    $errorMsg['is_email_confirm'] = ts("Please add a profile with an email address if 'Send Confirmation Email?' is selected");
+                }
+            }
             $additionalCustomPreId = $additionalCustomPostId = null;
             $isPreError = $isPostError = true;
             if ( CRM_Utils_Array::value( 'allow_same_participant_emails', $values ) &&
@@ -587,6 +593,27 @@ class CRM_Event_Form_ManageEvent_Registration extends CRM_Event_Form_ManageEvent
         }        
         
         return true;
+    }
+
+
+    /**
+     * Collect all email fields for an array of profile ids
+     *
+     * @return boolean
+     */
+    static function getEmailFields($profileIds) {
+        $emailFields = array();
+        foreach ($profileIds as $profileId) {
+            if ($profileId && is_numeric($profileId)) {
+                $fields = CRM_Core_BAO_UFGroup::getFields($profileId);
+                foreach ($fields as $field) {
+                    if (substr_count($field['name'], 'email')) {
+                        $emailFields[] = $field;
+                    }
+                }
+            }
+        }
+        return $emailFields;
     }
 
     /**
