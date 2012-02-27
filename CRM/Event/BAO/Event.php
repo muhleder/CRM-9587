@@ -1016,7 +1016,7 @@ WHERE civicrm_event.is_active = 1
         
         if ( $values['event']['is_email_confirm'] || $returnMessageText ) {
 
-            list( $displayName, $email ) = CRM_Event_BAO_Event::getEmailDetails($contactID, $values);
+            list( $displayName, $email ) = CRM_Event_BAO_Event::getEmailDetails( $contactID, $values['params'] );
             
             //send email only when email is present
             if ( isset( $email ) || $returnMessageText ) {
@@ -1096,7 +1096,7 @@ WHERE civicrm_event.is_active = 1
      * @return array( $displayName, $email )
      * @access public
      */
-    static function getEmailDetails($contactID, $values) {
+    static function getEmailDetails( $contactID, $params ) {
         require_once 'CRM/Contact/BAO/Contact/Location.php';
         //use primary email address, since we are not creating billing address for
         //1. participant is pay later.
