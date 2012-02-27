@@ -1016,7 +1016,7 @@ WHERE civicrm_event.is_active = 1
         
         if ( $values['event']['is_email_confirm'] || $returnMessageText ) {
 
-            list( $displayName, $email ) = CRM_Event_BAO_Event::getEmailDetails( $contactID, $values['params'] );
+            list( $displayName, $email ) = self::getEmailDetails( $contactID, $values['params'] );
             
             //send email only when email is present
             if ( isset( $email ) || $returnMessageText ) {
@@ -1108,12 +1108,12 @@ WHERE civicrm_event.is_active = 1
              CRM_Utils_Array::value('isOnWaitlist', $values['params'] ) ||
              CRM_Utils_Array::value('isRequireApproval', $values['params'] ) ||
              !CRM_Utils_Array::value('is_monetary', $values['event'] ) ) {
-            list($displayName, $email) = CRM_Contact_BAO_Contact_Location::getEmailDetails($contactID);
+            list( $displayName, $email ) = CRM_Contact_BAO_Contact_Location::getEmailDetails( $contactID );
         } else {
             // get the billing location type
             $locationTypes =& CRM_Core_PseudoConstant::locationType();
             $bltID = array_search('Billing', $locationTypes);
-            list($displayName, $email) = CRM_Contact_BAO_Contact_Location::getEmailDetails($contactID, false, $bltID);
+            list( $displayName, $email ) = CRM_Contact_BAO_Contact_Location::getEmailDetails( $contactID, false, $bltID );
         }
     }
     
