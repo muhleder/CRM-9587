@@ -1015,24 +1015,8 @@ WHERE civicrm_event.is_active = 1
         }
         
         if ( $values['event']['is_email_confirm'] || $returnMessageText ) {
-            require_once 'CRM/Contact/BAO/Contact/Location.php';
-            //use primary email address, since we are not creating billing address for
-            //1. participant is pay later.
-            //2. participant might be additional participant.
-            //3. participant might be on waiting list.
-            //4. registration might require approval.
-            if ( CRM_Utils_Array::value( 'is_pay_later',          $values['params'] ) ||
-                 CRM_Utils_Array::value( 'additionalParticipant', $values['params'] ) ||
-                 CRM_Utils_Array::value( 'isOnWaitlist',          $values['params'] ) ||
-                 CRM_Utils_Array::value( 'isRequireApproval',     $values['params'] ) ||
-                 !CRM_Utils_Array::value( 'is_monetary',          $values['event']  ) ) {
-                list( $displayName, $email ) = CRM_Contact_BAO_Contact_Location::getEmailDetails( $contactID );
-            } else {
-                // get the billing location type
-                $locationTypes =& CRM_Core_PseudoConstant::locationType( );
-                $bltID = array_search( 'Billing',  $locationTypes );
-                list( $displayName, $email ) = CRM_Contact_BAO_Contact_Location::getEmailDetails( $contactID, false, $bltID );
-            }
+
+            list( $displayName, $email ) = CRM_Event_BAO_Event::getEmailDetails($contactID, $values);
             
             //send email only when email is present
             if ( isset( $email ) || $returnMessageText ) {
@@ -1102,6 +1086,34 @@ WHERE civicrm_event.is_active = 1
                     CRM_Core_BAO_MessageTemplates::sendTemplate($sendTemplateParams);
                 }
             }
+        }
+    }
+
+
+    /**
+     * Function to get the email address and display name to send a notification to.
+     *
+     * @return array( $displayName, $email )
+     * @access public
+     */
+    static function getEmailDetails($contactID, $values) {
+        require_once 'CRM/Contact/BAO/Contact/Location.php';
+        //use primary email address, since we are not creating billing address for
+        //1. participant is pay later.
+        //2. participant might be additional participant.
+        //3. participant might be on waiting list.
+        //4. registration might require approval.
+        if ( CRM_Utils_Array::value('is_pay_later', $values['params'] ) ||
+             CRM_Utils_Array::value('additionalParticipant', $values['params'] ) ||
+             CRM_Utils_Array::value('isOnWaitlist', $values['params'] ) ||
+             CRM_Utils_Array::value('isRequireApproval', $values['params'] ) ||
+             !CRM_Utils_Array::value('is_monetary', $values['event'] ) ) {
+            list($displayName, $email) = CRM_Contact_BAO_Contact_Location::getEmailDetails($contactID);
+        } else {
+            // get the billing location type
+            $locationTypes =& CRM_Core_PseudoConstant::locationType();
+            $bltID = array_search('Billing', $locationTypes);
+            list($displayName, $email) = CRM_Contact_BAO_Contact_Location::getEmailDetails($contactID, false, $bltID);
         }
     }
     
