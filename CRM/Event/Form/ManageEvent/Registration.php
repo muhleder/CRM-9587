@@ -121,11 +121,19 @@ class CRM_Event_Form_ManageEvent_Registration extends CRM_Event_Form_ManageEvent
                                    'module'       => 'CiviEvent',
                                    'entity_id'    => $eventId );
 
-            // TODO make 'online event registration' the default option for the 'custom_pre_id' option
             list( $defaults['custom_pre_id'],
-                  $defaults['custom_post'] ) = 
+                  $defaults['custom_post'] ) =
                 CRM_Core_BAO_UFJoin::getUFGroupIds( $ufJoinParams );
-            
+
+            // Get the id for the event registration profile
+            require_once 'CRM/Core/BAO/UFJoin.php';
+            $eventRegistrationIdParams = $eventRegistrationIdDefaults = array('name' => 'event_registration', );
+            CRM_Core_BAO_UFGroup::retrieve($eventRegistrationIdParams, $eventRegistrationIdDefaults);
+
+            // Set event registration as the default profile if none selected
+            if ( !$defaults['custom_pre_id'] && count($defaults['custom_post']) == 0 ) {
+                $defaults['custom_pre_id'] = $eventRegistrationIdDefaults['id'];
+            }
             if ( isset( $defaults['custom_post'] ) && is_numeric($defaults['custom_post'])) {
                 $defaults['custom_post_id'] =  $defaults['custom_post']; 
             } else if (!empty($defaults['custom_post'])) {
@@ -151,7 +159,7 @@ class CRM_Event_Form_ManageEvent_Registration extends CRM_Event_Form_ManageEvent
                 list( $defaults['additional_custom_pre_id'],
                       $defaults['additional_custom_post'] ) = 
                     CRM_Core_BAO_UFJoin::getUFGroupIds( $ufJoinAddParams );
-                
+
                 if (isset( $defaults['additional_custom_post'] ) && is_numeric($defaults['additional_custom_post'])) {
                     $defaults['additional_custom_post_id'] = $defaults['additional_custom_post']; 
                 } else  if (!empty($defaults['additional_custom_post'])) {
